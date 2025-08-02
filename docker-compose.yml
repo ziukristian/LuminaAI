@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: ./HackSocial.MentalHealthApp.Api
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - hacksocial
+
+  frontend:
+    build:
+      context: ./HackSocial.MentalHealthApp.Frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://api:5000
+    depends_on:
+      - api
+    networks:
+      - hacksocial
+
+networks:
+  hacksocial:
+    driver: bridge
