@@ -23,8 +23,9 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-app.UseCors();
+app.UseRouting();
 
+app.UseCors();
 
 app.MapOpenApi();
 app.MapScalarApiReference(options =>

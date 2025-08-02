@@ -5,8 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HackSocial.MentalHealthApp.Api.Controllers;
 
+[ApiController]
 [Route("api/users")]
-public class UsersController(UserService userService) : ControllerBase
+public class UserLogsController(UserService userService) : ControllerBase
 {
     private readonly UserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
 
