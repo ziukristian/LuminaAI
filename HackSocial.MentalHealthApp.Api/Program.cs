@@ -25,16 +25,15 @@ var app = builder.Build();
 
 app.UseCors();
 
-if (app.Environment.IsDevelopment())
+
+app.MapOpenApi();
+app.MapScalarApiReference(options =>
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference(options =>
-    {
-        options
-            .WithTitle("Mental health API")
-            .WithDefaultHttpClient(ScalarTarget.Node, ScalarClient.Axios);
-    });
-}
+    options
+        .WithTitle("Mental health API")
+        .WithDefaultHttpClient(ScalarTarget.Node, ScalarClient.Axios);
+});
+
 
 app.UseHttpsRedirection();
 
