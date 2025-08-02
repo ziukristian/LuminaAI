@@ -60,9 +60,6 @@ secrets.json
 *.g.i.cs
 *.generated.cs
 
-# Entity Framework
-Migrations/
-
 # --------------------
 # Next.js Frontend
 # --------------------
