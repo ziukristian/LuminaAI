@@ -1,26 +1,35 @@
-﻿using HackSocial.MentalHealthApp.Api.Model;
+﻿using HackSocial.MentalHealthApp.Api.DTOs;
+using HackSocial.MentalHealthApp.Api.Model;
 
 namespace HackSocial.MentalHealthApp.Api.Services;
 
-public class MentalHealthReportsService(AppDbContext db)
+public class MentalHealthReportService(AppDbContext db)
 {
     private readonly AppDbContext _db = db ?? throw new ArgumentNullException(nameof(db));
-    public IEnumerable<MentalHealthReport> GetMentalHealthReportsByUserId(Guid userId)
+    public IEnumerable<GetMentalHealthreportDto> GetMentalHealthReportsByUserId(Guid userId)
     {
         if (userId == Guid.Empty)
         {
             throw new ArgumentException("Invalid user ID.", nameof(userId));
         }
 
-        return _db.Users
-            .Where(u => u.Id == userId)
-            .SelectMany(u => u.MentalHealthReports)
+        return _db.MentalHealthReports
+            .Where(mhr => mhr.UserId == userId)
+            .Select(mhr => new GetMentalHealthreportDto
+            {
+                Id = mhr.Id,
+                Content = mhr.Content,
+                Timestamp = mhr.Timestamp
+            })
             .ToList();
     }
 
-    public MentalHealthReport GenerateMentalHealthReport(Guid userId)
+    public GetMentalHealthreportDto GenerateMentalHealthReport(Guid userId)
     {
-        _ = _db.Users.Find(userId) ?? throw new InvalidOperationException("User not found.");
+        if (userId == Guid.Empty)
+        {
+            throw new ArgumentException("Invalid user ID.", nameof(userId));
+        }
 
         var journalEntries = _db.Users
             .Where(u => u.Id == userId)
@@ -42,6 +51,11 @@ public class MentalHealthReportsService(AppDbContext db)
         _db.MentalHealthReports.Add(mentalHealthReport);
         _db.SaveChanges();
 
-        return mentalHealthReport;
+        return new GetMentalHealthreportDto
+        {
+            Id = mentalHealthReport.Id,
+            Content = mentalHealthReport.Content,
+            Timestamp = mentalHealthReport.Timestamp
+        };
     }
 }

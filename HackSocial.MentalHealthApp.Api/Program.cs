@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=app.db"));
 
-builder.Services.AddScoped<JournalEntriesService>();
+builder.Services.AddScoped<JournalService>();
 
 builder.Services.AddCors(options =>
 {

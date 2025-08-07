@@ -7,16 +7,16 @@ namespace HackSocial.MentalHealthApp.Api.Controllers;
 
 [ApiController]
 [Route("api/journalEntries")]
-public class JournalEntriesController(JournalEntriesService userService) : ControllerBase
+public class JournalEntriesController(JournalService userService) : ControllerBase
 {
-    private readonly JournalEntriesService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+    private readonly JournalService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
 
     // Fixed userId for demonstration purposes
     private readonly Guid userId = Guid.Parse("00000000-0000-0000-0000-000000000001");
 
     [HttpGet]
     [Route("")]
-    public IActionResult GetUserJournalEntries()
+    public ActionResult<IEnumerable<GetJournalEntryDto>> GetUserJournalEntries()
     {
         if (userId == Guid.Empty)
         {
@@ -29,19 +29,19 @@ public class JournalEntriesController(JournalEntriesService userService) : Contr
 
     [HttpPost]
     [Route("")]
-    public IActionResult InsertUserJournalEntries(Guid userId, [FromBody] JournalEntryInsertDTO journalEntryInsertDTO)
+    public ActionResult<GetJournalEntryDto> InsertUserJournalEntries(Guid userId, [FromBody] CreateJournalEntryDto journalEntryInsertDTO)
     {
         if (userId == Guid.Empty || journalEntryInsertDTO == null)
         {
             return BadRequest("Invalid user ID or log entry data.");
         }
         var userJournalEntry = _userService.InsertJournalEntry(userId, journalEntryInsertDTO);
-        return CreatedAtAction(nameof(GetUserJournalEntries), new { userId }, userJournalEntry);
+        return Ok(userJournalEntry);
     }
 
     [HttpPut]
     [Route("{journalId}")]
-    public IActionResult UpdateUserJournalEntries(Guid userId, Guid journalId, [FromBody] JournalEntryInsertDTO journalEntryInsertDTO)
+    public ActionResult<GetJournalEntryDto> UpdateUserJournalEntries(Guid userId, Guid journalId, [FromBody] CreateJournalEntryDto journalEntryInsertDTO)
     {
         if (userId == Guid.Empty || journalId == Guid.Empty || journalEntryInsertDTO == null)
         {
@@ -65,7 +65,7 @@ public class JournalEntriesController(JournalEntriesService userService) : Contr
 
     [HttpGet]
     [Route("/scoreHistory")]
-    public IActionResult GetUserJournalEntriesScores()
+    public ActionResult<KeyValuePair<DateTime,int>> GetUserJournalEntriesScores()
     {
         if (userId == Guid.Empty)
         {

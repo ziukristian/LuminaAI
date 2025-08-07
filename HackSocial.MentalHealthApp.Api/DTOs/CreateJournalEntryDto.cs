@@ -2,7 +2,7 @@
 
 namespace HackSocial.MentalHealthApp.Api.DTOs;
 
-public class JournalEntryInsertDTO
+public class CreateJournalEntryDto
 {
     [Required]
     public int FeelingScore { get; set; } = 5;

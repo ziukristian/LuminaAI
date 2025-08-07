@@ -5,9 +5,9 @@ namespace HackSocial.MentalHealthApp.Api.Controllers;
 
 [ApiController]
 [Route("api/reports")]
-public class MentalHealthReportsController(MentalHealthReportsService reportsService) : ControllerBase
+public class MentalHealthReportsController(MentalHealthReportService reportsService) : ControllerBase
 {
-    private readonly MentalHealthReportsService _reportsService = reportsService ?? throw new ArgumentNullException(nameof(reportsService));
+    private readonly MentalHealthReportService _reportsService = reportsService ?? throw new ArgumentNullException(nameof(reportsService));
 
     // Fixed userId for demonstration purposes
     private readonly Guid userId = Guid.Parse("00000000-0000-0000-0000-000000000001");
