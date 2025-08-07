@@ -9,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=app.db"));
 
 builder.Services.AddScoped<JournalService>();
+builder.Services.AddScoped<MentalHealthReportService>();
+builder.Services.AddScoped<ChatService>();
+
 
 builder.Services.AddCors(options =>
 {

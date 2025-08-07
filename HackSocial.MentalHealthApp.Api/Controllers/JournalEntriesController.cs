@@ -29,7 +29,7 @@ public class JournalEntriesController(JournalService userService) : ControllerBa
 
     [HttpPost]
     [Route("")]
-    public ActionResult<GetJournalEntryDto> InsertUserJournalEntries(Guid userId, [FromBody] CreateJournalEntryDto journalEntryInsertDTO)
+    public ActionResult<GetJournalEntryDto> InsertUserJournalEntries([FromBody] CreateJournalEntryDto journalEntryInsertDTO)
     {
         if (userId == Guid.Empty || journalEntryInsertDTO == null)
         {
@@ -41,7 +41,7 @@ public class JournalEntriesController(JournalService userService) : ControllerBa
 
     [HttpPut]
     [Route("{journalId}")]
-    public ActionResult<GetJournalEntryDto> UpdateUserJournalEntries(Guid userId, Guid journalId, [FromBody] CreateJournalEntryDto journalEntryInsertDTO)
+    public ActionResult<GetJournalEntryDto> UpdateUserJournalEntries(Guid journalId, [FromBody] CreateJournalEntryDto journalEntryInsertDTO)
     {
         if (userId == Guid.Empty || journalId == Guid.Empty || journalEntryInsertDTO == null)
         {
@@ -53,7 +53,7 @@ public class JournalEntriesController(JournalService userService) : ControllerBa
 
     [HttpDelete]
     [Route("{journalId}")]
-    public IActionResult DeleteUserJournalEntries(Guid userId, Guid journalId)
+    public IActionResult DeleteUserJournalEntries(Guid journalId)
     {
         if (userId == Guid.Empty || journalId == Guid.Empty)
         {
