@@ -127,7 +127,8 @@ public class ChatService(AppDbContext db)
         {
             Id = message.Id,
             Content = message.Content,
-            Timestamp = message.Timestamp
+            Timestamp = message.Timestamp,
+            IsUserMessage = message.IsUserMessage
         };
     }
 
