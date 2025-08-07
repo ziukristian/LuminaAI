@@ -38,7 +38,7 @@ public class ChatService(AppDbContext db)
 
         var user = _db.Users.Find(userId) ?? throw new InvalidOperationException("User not found.");
 
-        if (_db.Chats.Any(c => c.UserId == userId && c.Name.Equals(chatName, StringComparison.OrdinalIgnoreCase)))
+        if (_db.Chats.Any(c => c.UserId == userId && c.Name.ToLower() == chatName.ToLower()))
         {
             throw new InvalidOperationException("Chat with the same name already exists for this user.");
         }

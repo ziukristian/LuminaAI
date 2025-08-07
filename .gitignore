@@ -59,6 +59,7 @@ secrets.json
 *.g.cs
 *.g.i.cs
 *.generated.cs
+*.db
 
 # --------------------
 # Next.js Frontend
