@@ -1,6 +1,6 @@
 ﻿namespace HackSocial.MentalHealthApp.Api.DTOs;
 
-public class UserLogEntryRequestDTO
+public class JournalEntryRequestDTO
 {
     public Guid UserId { get; set; }
     public int FeelingScore { get; set; } = 5;

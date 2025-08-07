@@ -3,6 +3,11 @@
 public class User
 {
     public Guid Id { get; set; } = Guid.NewGuid();
-    public string Username { get; set; } = string.Empty;
-    public List<UserLogEntry> UserLogEntries { get; set; } = [];
+    public string UserName { get; set; } = string.Empty;
+    public List<JournalEntry> JournalEntries { get; set; } = [];
+    public List<MentalHealthReport> MentalHealthReports { get; set; } = [];
+
 }
+
+
+

@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=app.db"));
 
-builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<JournalEntriesService>();
 
 builder.Services.AddCors(options =>
 {
@@ -54,8 +54,8 @@ using (var scope = app.Services.CreateScope())
     {
         var user = new User
         {
-            Id = Guid.Parse("a0da3969-1451-42c6-a807-70ea7fde4d8f"),
-            Username = "defaultUser"
+            Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
+            UserName = "Lois"
         };
         db.Users.Add(user);
         db.SaveChanges();
