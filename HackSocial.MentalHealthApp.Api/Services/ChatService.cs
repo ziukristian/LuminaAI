@@ -96,7 +96,8 @@ public class ChatService(AppDbContext db)
             {
                 Id = m.Id,
                 Content = m.Content,
-                Timestamp = m.Timestamp
+                Timestamp = m.Timestamp,
+                IsUserMessage = m.IsUserMessage
             })
             .ToList();
     }
