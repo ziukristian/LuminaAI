@@ -26,6 +26,7 @@ obj/
 *.ide
 *.vs/
 
+
 # Build results
 [Bb]uild/
 [Ll]og/
@@ -54,6 +55,8 @@ artifacts/
 
 # ASP.NET secrets
 secrets.json
+appsettings.json
+
 
 # .NET generated
 *.g.cs
@@ -83,3 +86,4 @@ dist/
 # OS-specific
 .DS_Store
 Thumbs.db
+/HackSocial.MentalHealthApp.Api/appsettings.Development.json
