@@ -1,11 +1,23 @@
 ﻿using HackSocial.MentalHealthApp.Api.DTOs;
 using HackSocial.MentalHealthApp.Api.Model;
+using Microsoft.Extensions.Configuration;
+using System.Text;
 
 namespace HackSocial.MentalHealthApp.Api.Services;
 
-public class ChatService(AppDbContext db)
+public class ChatService
 {
-    private readonly AppDbContext _db = db ?? throw new ArgumentNullException(nameof(db));
+    private readonly AppDbContext _db;
+    private readonly OpenAIService _openAiService;
+    private readonly IConfiguration _configuration;
+
+    public ChatService(AppDbContext db, OpenAIService openAiService, IConfiguration configuration)
+    {
+        _db = db ?? throw new ArgumentNullException(nameof(db));
+        _openAiService = openAiService ?? throw new ArgumentNullException(nameof(openAiService));
+        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+    }
+    
     public IEnumerable<GetChatDto> GetChatsByUserId(Guid userId)
     {
         if (userId == Guid.Empty)
@@ -24,6 +36,7 @@ public class ChatService(AppDbContext db)
             })
             .ToList();
     }
+    
     public GetChatDto CreateChat(Guid userId, string chatName)
     {
         if (userId == Guid.Empty)
@@ -62,6 +75,7 @@ public class ChatService(AppDbContext db)
 
         return chatDto;
     }
+    
     public void DeleteChat(Guid chatId)
     {
         if (chatId == Guid.Empty)
@@ -74,6 +88,7 @@ public class ChatService(AppDbContext db)
         _db.Chats.Remove(chat);
         _db.SaveChanges();
     }
+    
     public bool DoesUserOwnChat(Guid userId, Guid chatId)
     {
         if (userId == Guid.Empty || chatId == Guid.Empty)
@@ -82,6 +97,7 @@ public class ChatService(AppDbContext db)
         }
         return _db.Chats.Any(c => c.Id == chatId && c.UserId == userId);
     }
+    
     public IEnumerable<GetMessageDto> GetMessagesByChatId(Guid chatId)
     {
         if (chatId == Guid.Empty)
@@ -101,6 +117,7 @@ public class ChatService(AppDbContext db)
             })
             .ToList();
     }
+    
     public GetMessageDto InsertMessage(Guid chatId, CreateMessageDto messageInsertDTO)
     {
         if (chatId == Guid.Empty)
@@ -133,4 +150,53 @@ public class ChatService(AppDbContext db)
         };
     }
 
+    public async Task<GetMessageDto> GenerateAIResponse(Guid chatId, GetMessageDto userMessage)
+    {
+        if (chatId == Guid.Empty)
+        {
+            throw new ArgumentException("Invalid chat ID.", nameof(chatId));
+        }
+
+        if (userMessage == null)
+        {
+            throw new ArgumentNullException(nameof(userMessage));
+        }
+
+        // Get the chat history to provide context
+        var chatHistory = GetMessagesByChatId(chatId)
+            .OrderBy(m => m.Timestamp)
+            .TakeLast(10) // Limit to the most recent 10 messages to avoid token limit issues
+            .ToList();
+
+        // Build the conversation history for context
+        var conversationBuilder = new StringBuilder();
+        foreach (var message in chatHistory)
+        {
+            conversationBuilder.AppendLine(message.IsUserMessage ? 
+                $"User: {message.Content}" : 
+                $"Assistant: {message.Content}");
+        }
+        
+        // Add the latest user message
+        conversationBuilder.AppendLine($"User: {userMessage.Content}");
+
+        // Get system prompt from configuration
+        var systemPrompt = _configuration["OpenAI:ChatSystem"] ?? 
+            "You are a supportive mental health chat assistant. Provide kind, empathetic responses to help users process their thoughts and feelings. Never give harmful advice and always encourage professional help for serious issues.";
+
+        // Generate the AI response
+        var aiResponseContent = await _openAiService.GenerateCompletionAsync(
+            conversationBuilder.ToString(), 
+            systemPrompt);
+
+        // Create a message DTO for the AI response
+        var responseMessage = new CreateMessageDto
+        {
+            Content = aiResponseContent,
+            IsUserMessage = false
+        };
+
+        // Insert the AI response into the chat
+        return InsertMessage(chatId, responseMessage);
+    }
 }

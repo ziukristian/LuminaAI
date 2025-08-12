@@ -1,11 +1,22 @@
 ﻿using HackSocial.MentalHealthApp.Api.DTOs;
 using HackSocial.MentalHealthApp.Api.Model;
+using Microsoft.Extensions.Configuration;
 
 namespace HackSocial.MentalHealthApp.Api.Services;
 
-public class MentalHealthReportService(AppDbContext db)
+public class MentalHealthReportService
 {
-    private readonly AppDbContext _db = db ?? throw new ArgumentNullException(nameof(db));
+    private readonly AppDbContext _db;
+    private readonly OpenAIService _openAiService;
+    private readonly IConfiguration _configuration;
+
+    public MentalHealthReportService(AppDbContext db, OpenAIService openAiService, IConfiguration configuration)
+    {
+        _db = db ?? throw new ArgumentNullException(nameof(db));
+        _openAiService = openAiService ?? throw new ArgumentNullException(nameof(openAiService));
+        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+    }
+
     public IEnumerable<GetMentalHealthreportDto> GetMentalHealthReportsByUserId(Guid userId)
     {
         if (userId == Guid.Empty)
@@ -24,7 +35,7 @@ public class MentalHealthReportService(AppDbContext db)
             .ToList();
     }
 
-    public GetMentalHealthreportDto GenerateMentalHealthReport(Guid userId)
+    public async Task<GetMentalHealthreportDto> GenerateMentalHealthReport(Guid userId)
     {
         if (userId == Guid.Empty)
         {
@@ -34,17 +45,34 @@ public class MentalHealthReportService(AppDbContext db)
         var journalEntries = _db.Users
             .Where(u => u.Id == userId)
             .SelectMany(u => u.JournalEntries)
+            .OrderByDescending(je => je.Timestamp)
+            .Take(10)
             .ToList();
 
-        // Merge entries into a single string (with their scores) for the llm
-        var journalContent = string.Join("\n", journalEntries.Select(je => $"{je.Timestamp}: {je.Content} (Feeling Score: {je.FeelingScore})"));
+        if (!journalEntries.Any())
+        {
+            throw new InvalidOperationException("No journal entries found for this user.");
+        }
 
-        // TODO: Call LLM with journalContent to generate a report
+        var journalContent = string.Join("\n\n", journalEntries.Select(je => 
+            $"Date: {je.Timestamp.ToLocalTime():yyyy-MM-dd HH:mm}\n" +
+            $"Feeling Score: {je.FeelingScore}/10\n" +
+            $"Entry: {je.Content}"));
+
+        var prompt = $"Based on the following journal entries, please provide a comprehensive mental health analysis. " +
+            $"Focus on identifying patterns, mood trends, and potential areas of concern or improvement. " +
+            $"Here are the journal entries (most recent first):\n\n{journalContent}";
+
+        var systemPrompt = _configuration["OpenAI:MentalHealthSystem"] ?? 
+            "You are a mental health assistant. Based on user's journal entries, provide compassionate insights and suggestions for improving their mental wellbeing.";
+
+        // Call OpenAI to generate the report
+        var reportContent = await _openAiService.GenerateCompletionAsync(prompt, systemPrompt);
 
         var mentalHealthReport = new MentalHealthReport
         {
             UserId = userId,
-            Content = "HEY! I'm a placeholder mental health report!",
+            Content = reportContent,
             Timestamp = DateTime.UtcNow
         };
 

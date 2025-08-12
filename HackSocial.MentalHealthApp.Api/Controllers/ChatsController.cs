@@ -6,12 +6,17 @@ namespace HackSocial.MentalHealthApp.Api.Controllers;
 
 [ApiController]
 [Route("api/chats")]
-public class ChatsController(ChatService chatService) : ControllerBase
+public class ChatsController : ControllerBase
 {
-    private readonly ChatService _chatService = chatService ?? throw new ArgumentNullException(nameof(chatService));
+    private readonly ChatService _chatService;
 
     // Fixed userId for demonstration purposes
     private readonly Guid userId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+    
+    public ChatsController(ChatService chatService)
+    {
+        _chatService = chatService ?? throw new ArgumentNullException(nameof(chatService));
+    }
     
     [HttpGet]
     [Route("")]
@@ -63,7 +68,7 @@ public class ChatsController(ChatService chatService) : ControllerBase
 
     [HttpPost]
     [Route("{chatId}/messages")]
-    public ActionResult<RespondToMessageDto> SendMessage(Guid chatId, [FromBody] CreateMessageDto message)
+    public async Task<ActionResult<RespondToMessageDto>> SendMessage(Guid chatId, [FromBody] CreateMessageDto message)
     {
         if (userId == Guid.Empty || chatId == Guid.Empty || message == null || string.IsNullOrWhiteSpace(message.Content))
         {
@@ -78,20 +83,14 @@ public class ChatsController(ChatService chatService) : ControllerBase
         message.IsUserMessage = true;
 
         var sentMessage = _chatService.InsertMessage(chatId, message);
-
-        // TODO: Call LLM with messages to generate a response
-        var systemMessage = new CreateMessageDto
-        {
-            Content = "I'm a system message!",
-            IsUserMessage = false
-        };
-
-        var outputMessage = _chatService.InsertMessage(chatId, systemMessage);
+        
+        // Generate AI response using OpenAI
+        var aiMessage = await _chatService.GenerateAIResponse(chatId, sentMessage);
 
         var responseMessage = new RespondToMessageDto
         {
             UserMessage = sentMessage,
-            SystemMessage = outputMessage
+            SystemMessage = aiMessage
         };
 
         return Ok(responseMessage);

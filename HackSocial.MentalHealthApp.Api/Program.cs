@@ -11,7 +11,8 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data S
 builder.Services.AddScoped<JournalService>();
 builder.Services.AddScoped<MentalHealthReportService>();
 builder.Services.AddScoped<ChatService>();
-
+builder.Services.AddScoped<OpenAIService>();
+builder.Services.AddHttpClient();
 
 builder.Services.AddCors(options =>
 {
