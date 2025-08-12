@@ -36,7 +36,7 @@ It offers **empathetic conversations**, **mood tracking**, **mindfulness exercis
 
 ### Prerequisites
 - Node.js 18+
-- npm or yarn
+- pnpm
 ### Installation
 ```bash
 # Clone the repository
@@ -44,9 +44,6 @@ git clone https://github.com/yourusername/lumina-ai.git
 cd lumina-ai
 
 # Install dependencies
-npm install
-# or
-yarn install
+pnpm install
 
-# Create an .env.local file
-cp .env.example .env.local
+pnpm run dev 
