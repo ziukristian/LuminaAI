@@ -66,13 +66,5 @@ pnpm install ; pnpm dev
 - Containerizing applications for easy deployment
 - Designing user-centric interfaces
 
-## Screenshots / UI Mockups
-*Add screenshots or UI mockups here to showcase your app!*
-
-## Contributing
-Pull requests and suggestions are welcome! Help us make mental health support more accessible.
-
----
-
 ### HackSocial 2025
 This project was built for the HackSocial hackathon, encouraging solutions that make a real impact in our community. Learn more at [HackSocial](#).
