@@ -1,4 +1,4 @@
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -9,21 +9,37 @@ namespace HackSocial.MentalHealthApp.Api.Services;
 
 public class OpenAIService
 {
+    private const string EnvVarName = "OPENAI_API_KEY";
+
     private readonly IConfiguration _configuration;
     private readonly HttpClient _httpClient;
+    private readonly bool _hasApiKey;
 
-    public OpenAIService(IConfiguration configuration, HttpClient httpClient = null)
+    public OpenAIService(IConfiguration configuration, HttpClient? httpClient = null)
     {
         _configuration = configuration;
         _httpClient = httpClient ?? new HttpClient();
-        
-        string apiKey = _configuration["OpenAI:ApiKey"] ?? throw new InvalidOperationException("OpenAI API key not configured.");
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+
+        var apiKey = Environment.GetEnvironmentVariable(EnvVarName);
+
+        _hasApiKey = !string.IsNullOrWhiteSpace(apiKey);
+
+        if (_hasApiKey)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+        }
+
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
     }
 
     public async Task<string> GenerateCompletionAsync(string prompt, string systemPrompt, int maxTokens = 1000)
     {
+        // If no API key, short-circuit with a placeholder
+        if (!_hasApiKey)
+        {
+            return "NO KEY, PLACEHOLDER MESSAGE";
+        }
+
         var model = _configuration["OpenAI:Model"] ?? "gpt-4o-mini";
 
         var requestBody = new
@@ -38,7 +54,7 @@ public class OpenAIService
         };
 
         var jsonContent = JsonSerializer.Serialize(requestBody);
-        var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+        using var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
         try
         {
@@ -48,7 +64,8 @@ public class OpenAIService
             var responseBody = await response.Content.ReadAsStringAsync();
             var completionResponse = JsonSerializer.Deserialize<CompletionResponse>(responseBody);
 
-            return completionResponse?.Choices?[0]?.Message?.Content?.Trim() ?? string.Empty;
+            return completionResponse?.Choices?[0]?.Message?.Content?.Trim()
+                   ?? "PLACEHOLDER MESSAGE";
         }
         catch (Exception ex)
         {
