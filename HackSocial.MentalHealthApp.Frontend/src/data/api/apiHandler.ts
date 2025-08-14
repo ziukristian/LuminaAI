@@ -4,7 +4,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
  * Axios instance with default settings
  */
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
     "Cache-Control": "no-cache, no-store, must-revalidate",
@@ -12,9 +12,6 @@ const axiosInstance = axios.create({
     Expires: "0",
   },
 });
-
-console.log("Axios instance created");
-console.log("Base URL:", process.env);
 
 /**
  * Request Interceptor — add auth token
