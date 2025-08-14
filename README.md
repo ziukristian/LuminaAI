@@ -1,8 +1,8 @@
-# HackSocial Mental Health App
+# LuminaAI
 
 ## Project Overview
 
-HackSocial Mental Health App is an open-source project developed for the HackSocial 2025 hackathon, focused on creating solutions for the greater good. This application aims to support mental health by providing users with tools to journal, chat, and generate mental health reports, leveraging AI to enhance user experience and well-being.
+LuminaAI is an open-source project developed for the HackSocial 2025 hackathon, focused on creating solutions for the greater good. This application aims to support mental health by providing users with tools to journal, chat, and generate mental health reports, leveraging AI to enhance user experience and well-being.
 
 ### Inspiration
 
