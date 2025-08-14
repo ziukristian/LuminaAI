@@ -38,6 +38,8 @@ interface Message {
   isUserMessage: boolean
   timestamp: Date | string
   type?: "text" | "mood-check" | "tool-suggestion"
+  isTempMessage?: boolean
+  failed?: boolean
 }
 
 interface ChatUI {
@@ -163,44 +165,83 @@ export default function ChatPage() {
 const sendMessage = async () => {
   if (!inputMessage.trim() || !currentChatId) return;
 
+  // Generate a temporary ID for the user message
+  const tempId = uuidv4();
+  
+  // Create and display the user message immediately with a temporary ID
   const userMessage: Message = {
-    id: uuidv4(),
+    id: tempId,
     content: inputMessage,
     isUserMessage: true,
     timestamp: new Date(),
+    isTempMessage: true // Flag to identify this as a temporary message
   };
 
   setMessages(prev => [...prev, userMessage]);
   setInputMessage("");
 
   try {
-    await apiHandler.chats.sendMessage(currentChatId, {
+    // Send message to the API
+    const response = await apiHandler.chats.sendMessage(currentChatId, {
       content: inputMessage,
       sender: "user", // Keep this as is for API compatibility
       userId: "USER_ID",
     });
-
-    const allMessages = await apiHandler.chats.listMessages(currentChatId);
-
-   setMessages(prev => {
-  const existingIds = new Set(prev.map(m => m.id));
-  const newOnes: Message[] = allMessages
-    .filter(m => !existingIds.has(m.id))
-    .map(m => ({
-      id: m.id,
-      content: m.content,
-      isUserMessage: m.isUserMessage,
-      timestamp: new Date(m.timestamp),
-    }));
-
-  return [...prev, ...newOnes];
-});
-
+    
+    // Handle the response which contains both system and user messages
+    if (response.systemMessage && response.userMessage) {
+      setMessages(prev => {
+        // Filter out the temporary message
+        const filteredMessages = prev.filter(m => !m.isTempMessage);
+        
+        // Add the official user message from the API
+        const apiUserMessage: Message = {
+          id: response.userMessage.id,
+          content: response.userMessage.content,
+          isUserMessage: response.userMessage.isUserMessage,
+          timestamp: new Date(response.userMessage.timestamp)
+        };
+        
+        // Add the system response
+        const apiSystemMessage: Message = {
+          id: response.systemMessage.id,
+          content: response.systemMessage.content,
+          isUserMessage: response.systemMessage.isUserMessage,
+          timestamp: new Date(response.systemMessage.timestamp)
+        };
+        
+        return [...filteredMessages, apiUserMessage, apiSystemMessage];
+      });
+    } else {
+      // Fallback to the old approach if the response format is different
+      const allMessages = await apiHandler.chats.listMessages(currentChatId);
+      
+      setMessages(prev => {
+        // Remove temporary messages
+        const filteredMessages = prev.filter(m => !m.isTempMessage);
+        
+        // Get the IDs of existing (non-temporary) messages
+        const existingIds = new Set(filteredMessages.map(m => m.id));
+        
+        // Add new messages from the API
+        const newOnes: Message[] = allMessages
+          .filter(m => !existingIds.has(m.id))
+          .map(m => ({
+            id: m.id,
+            content: m.content,
+            isUserMessage: m.isUserMessage,
+            timestamp: new Date(m.timestamp),
+          }));
+        
+        return [...filteredMessages, ...newOnes];
+      });
+    }
   } catch (err) {
     console.error("Error sending message:", err);
+    // Mark the temporary message as failed
     setMessages(prev =>
       prev.map(msg =>
-        msg.id === userMessage.id ? { ...msg, failed: true } : msg
+        msg.id === tempId ? { ...msg, failed: true } : msg
       )
     );
   }
