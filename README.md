@@ -31,7 +31,7 @@ Mental health is a critical aspect of our daily lives, yet many struggle to find
 ```powershell
 # Clone the repo
 git clone https://github.com/ziukristian/LuminaAI.git
-cd HackSocial_MentalHealthApp
+cd LuminaAI
 ```
 
 ### 2. Run with Docker Compose
