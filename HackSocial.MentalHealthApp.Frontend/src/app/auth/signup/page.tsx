@@ -28,7 +28,6 @@ export default function SignUpPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-sage-50 via-white to-lavender-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
-        {/* Header */}
         <div className="text-center space-y-4">
 
           <div className="flex items-center justify-center space-x-2">
@@ -41,7 +40,6 @@ export default function SignUpPage() {
           <p className="text-sage-700">Create your safe space for mental wellness and growth</p>
         </div>
 
-        {/* Benefits */}
         <Card className="border-sage-100 bg-sage-25">
           <CardContent className="p-4">
             <h3 className="font-medium text-sage-900 mb-3">What you'll get:</h3>
@@ -66,7 +64,6 @@ export default function SignUpPage() {
           </CardContent>
         </Card>
 
-        {/* Sign Up Form */}
         <Card className="border-sage-100 shadow-lg">
           <CardHeader className="space-y-2 pb-4">
             <div className="flex items-center justify-center space-x-2 text-sage-600">
@@ -236,7 +233,6 @@ export default function SignUpPage() {
           </CardContent>
         </Card>
 
-        {/* Anonymous Option */}
         <Card className="border-sage-100 bg-sage-25">
           <CardContent className="p-4 text-center">
             <p className="text-sm text-sage-700 mb-3">

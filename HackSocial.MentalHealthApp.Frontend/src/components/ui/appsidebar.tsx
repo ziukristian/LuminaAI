@@ -28,7 +28,6 @@ import {
   LogOut,
 } from "lucide-react"
 
-// Types
 type NavItem = {
   title: string
   url: string
@@ -42,7 +41,6 @@ type ToolItem = {
   icon: React.ElementType
 }
 
-// Data
 const navigationItems: NavItem[] = [
   {
     title: "Dashboard",
@@ -88,7 +86,6 @@ export const AppSidebar = () => {
 
   return (
     <Sidebar className="border-r border-sage-100">
-      {/* Header */}
       <SidebarHeader className="border-b border-sage-100 p-6">
         <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-sage-600 rounded-lg flex items-center justify-center">
@@ -98,9 +95,7 @@ export const AppSidebar = () => {
              </div>
       </SidebarHeader>
 
-      {/* Content */}
       <SidebarContent className="p-4">
-        {/* Navigation */}
         <SidebarGroup>
           <SidebarGroupLabel className="text-sage-500 font-medium mb-2">
             Navigation
@@ -128,7 +123,6 @@ export const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Wellness Tools */}
         <SidebarGroup className="mt-6">
           <SidebarGroupLabel className="text-sage-500 font-medium mb-2">
             Wellness Tools
@@ -166,7 +160,6 @@ export const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Quick Actions */}
        <SidebarGroup className="mt-6">
   <SidebarGroupLabel className="text-sage-500 font-medium mb-2">
     Preferences
@@ -193,7 +186,6 @@ export const AppSidebar = () => {
           <button
             type="button"
             onClick={() => {
-              // TODO: Replace with actual logout logic
               console.log("Logging out...")
             }}
             className="flex items-center w-full"

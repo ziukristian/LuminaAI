@@ -65,7 +65,6 @@ export default function MoodTrackerPage() {
     <div className="flex min-h-screen bg-gradient-to-br from-sage-50 via-white to-lavender-50">
       <AppSidebar />
        <div className="flex-1 overflow-y-auto">
-      {/* Header */}
      <div className="bg-white border-b border-sage-100">
        <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -81,7 +80,6 @@ export default function MoodTrackerPage() {
 
       <div className="container mx-auto px-4 py-6 sm:py-8 max-w-6xl">
         <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
-          {/* Mood Entry */}
           <div className="lg:col-span-2 space-y-6">
             <Card className="border-sage-100">
               <CardHeader>
@@ -92,7 +90,6 @@ export default function MoodTrackerPage() {
                 <p className="text-sage-600">Track your mood and energy to understand patterns over time</p>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Mood Selection */}
                 <div className="space-y-3">
                   <Label className="text-sage-900 font-medium">Mood</Label>
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
@@ -119,7 +116,6 @@ export default function MoodTrackerPage() {
                   </div>
                 </div>
 
-                {/* Energy Selection */}
                 <div className="space-y-3">
                   <Label className="text-sage-900 font-medium">Energy Level</Label>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -146,7 +142,6 @@ export default function MoodTrackerPage() {
                   </div>
                 </div>
 
-                {/* Notes */}
                 <div className="space-y-2">
                   <Label htmlFor="notes" className="text-sage-900 font-medium">
                     Notes (optional)
@@ -160,7 +155,6 @@ export default function MoodTrackerPage() {
                   />
                 </div>
 
-                {/* Submit Button */}
                 <Button
                   onClick={handleSubmit}
                   disabled={!selectedMood || !selectedEnergy}
@@ -174,8 +168,6 @@ export default function MoodTrackerPage() {
               </CardContent>
             </Card>
           </div>
-
-          {/* Recent Entries & Insights */}
           <div className="space-y-6">
             <Card className="border-sage-100">
               <CardHeader>

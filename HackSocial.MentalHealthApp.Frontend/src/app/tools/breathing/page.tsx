@@ -105,8 +105,6 @@ export default function BreathingExercisePage() {
     <div className="flex min-h-screen bg-gradient-to-br from-sage-50 via-white to-lavender-50">
       <AppSidebar />
             <div className="flex-1 overflow-y-auto">
-
-      {/* Header */}
       <div className="bg-white border-b border-sage-100">
           <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -120,9 +118,8 @@ export default function BreathingExercisePage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-6 sm:py-8 max-w-6xl"> {/* Changed max-w-4xl to max-w-6xl */}
+      <div className="container mx-auto px-4 py-6 sm:py-8 max-w-6xl"> 
         <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
-          {/* Main Exercise */}
           <div className="lg:col-span-2 space-y-6">
             <Card className="border-sage-100">
               <CardHeader className="text-center">
@@ -130,7 +127,6 @@ export default function BreathingExercisePage() {
                 <p className="text-sage-600">A calming breath pattern to reduce anxiety and promote relaxation</p>
               </CardHeader>
               <CardContent className="space-y-8">
-                {/* Breathing Circle */}
                 <div className="flex justify-center">
                   <div className="relative w-64 h-64 sm:w-80 sm:h-80 flex items-center justify-center">
                     <div
@@ -160,8 +156,6 @@ export default function BreathingExercisePage() {
                     </div>
                   </div>
                 </div>
-
-                {/* Progress */}
                 <div className="space-y-4">
                   <div className="flex justify-between text-sm text-sage-600">
                     <span>
@@ -172,7 +166,6 @@ export default function BreathingExercisePage() {
                   <Progress value={(cycle / totalCycles) * 100} className="h-2" />
                 </div>
 
-                {/* Controls */}
                 <div className="flex justify-center space-x-4">
                   {!isActive ? (
                     <Button onClick={startExercise} className="bg-sage-600 hover:bg-sage-700 text-white px-8" size="lg">
@@ -203,9 +196,8 @@ export default function BreathingExercisePage() {
             </Card>
           </div>
 
-          {/* Instructions & Benefits - Wider Cards */}
-          <div className="space-y-6 lg:col-span-1"> {/* Added lg:col-span-1 to ensure proper grid layout */}
-            <Card className="border-sage-100 w-full"> {/* Added w-full */}
+          <div className="space-y-6 lg:col-span-1"> 
+            <Card className="border-sage-100 w-full">
               <CardHeader>
                 <CardTitle className="text-sage-900">How It Works</CardTitle>
               </CardHeader>
@@ -254,12 +246,12 @@ export default function BreathingExercisePage() {
               </CardContent>
             </Card>
 
-            <Card className="border-sage-100 w-full"> {/* Added w-full */}
+            <Card className="border-sage-100 w-full">
               <CardHeader>
                 <CardTitle className="text-sage-900">Benefits</CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-3 text-sm text-sage-700"> {/* Increased space-y-2 to space-y-3 */}
+                <ul className="space-y-3 text-sm text-sage-700"> 
                   <li className="flex items-start space-x-2">
                     <div className="w-1.5 h-1.5 bg-sage-400 rounded-full mt-1.5"></div>
                     <span>Reduces anxiety and stress</span>
@@ -284,9 +276,9 @@ export default function BreathingExercisePage() {
               </CardContent>
             </Card>
 
-            <Card className="border-sage-100 bg-sage-25 w-full"> {/* Added w-full */}
-              <CardContent className="p-6"> {/* Increased padding from p-4 to p-6 */}
-                <p className="text-sm text-sage-700 mb-4"> {/* Increased mb-3 to mb-4 */}
+            <Card className="border-sage-100 bg-sage-25 w-full">
+              <CardContent className="p-6"> 
+                <p className="text-sm text-sage-700 mb-4"> 
                   Find a comfortable position and try to practice this technique daily for best results.
                 </p>
                 <Button
