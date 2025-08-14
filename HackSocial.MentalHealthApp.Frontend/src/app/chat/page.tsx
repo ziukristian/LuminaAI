@@ -35,8 +35,8 @@ import { v4 as uuidv4 } from "uuid"
 interface Message {
   id: string
   content: string
-  sender: "user" | "ai"
-  timestamp: Date
+  isUserMessage: boolean
+  timestamp: Date | string
   type?: "text" | "mood-check" | "tool-suggestion"
 }
 
@@ -53,7 +53,7 @@ export default function ChatPage() {
       id: "1",
       content:
         "Hi there! I'm your AI Mental Health Buddy. I'm here to listen, support, and help you navigate whatever you're going through. How are you feeling today?",
-      sender: "ai",
+      isUserMessage: false,
       timestamp: new Date(),
     },
   ])
@@ -115,7 +115,7 @@ export default function ChatPage() {
     setMessages([{
       id: "init",
       content: "Hi there! I'm your AI Mental Health Buddy. How are you feeling today?",
-      sender: "ai",
+      isUserMessage: false,
       timestamp: new Date()
     }])
     setMobileView("chat")
@@ -136,7 +136,7 @@ export default function ChatPage() {
       msgs.map(m => ({
         id: m.id,
         content: m.content,
-        sender: m.senderId === "user" ? "user" : "ai",
+        isUserMessage: m.isUserMessage,
         timestamp: new Date(m.timestamp)
       }))
     )
@@ -166,7 +166,7 @@ const sendMessage = async () => {
   const userMessage: Message = {
     id: uuidv4(),
     content: inputMessage,
-    sender: "user",
+    isUserMessage: true,
     timestamp: new Date(),
   };
 
@@ -176,7 +176,7 @@ const sendMessage = async () => {
   try {
     await apiHandler.chats.sendMessage(currentChatId, {
       content: inputMessage,
-      sender: "user",
+      sender: "user", // Keep this as is for API compatibility
       userId: "USER_ID",
     });
 
@@ -189,7 +189,7 @@ const sendMessage = async () => {
     .map(m => ({
       id: m.id,
       content: m.content,
-      sender: (m.senderId === "user" ? "user" : "ai") as "user" | "ai",
+      isUserMessage: m.isUserMessage,
       timestamp: new Date(m.timestamp),
     }));
 
@@ -221,7 +221,7 @@ const sendMessage = async () => {
     const moodMessage: Message = {
       id: Date.now().toString(),
       content: `I'm feeling ${mood} today`,
-      sender: "user",
+      isUserMessage: true,
       timestamp: new Date(),
       type: "mood-check",
     }
@@ -232,7 +232,7 @@ const sendMessage = async () => {
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
         content: `Thank you for sharing that you're feeling ${mood}. I'm here to support you. Would you like to talk about what's contributing to this feeling, or would you prefer to try a quick exercise to help?`,
-        sender: "ai",
+        isUserMessage: false,
         timestamp: new Date(),
       }
       setMessages((prev) => [...prev, aiResponse])
@@ -485,18 +485,18 @@ const sendMessage = async () => {
              {messages.map((message) => (
     <div 
       key={message.id} 
-      className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
+      className={`flex ${message.isUserMessage ? "justify-end" : "justify-start"}`}
     >
       <div
         className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${
-          message.sender === "user" 
+          message.isUserMessage 
             ? "bg-sage-600 text-white rounded-tr-none" 
             : "bg-white border border-sage-100 text-sage-900 rounded-tl-none"
         }`}
       >
         <p className="text-sm leading-relaxed">{message.content}</p>
-        <p className={`text-xs mt-2 ${message.sender === "user" ? "text-sage-200" : "text-sage-500"}`}>
-          {message.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+        <p className={`text-xs mt-2 ${message.isUserMessage ? "text-sage-200" : "text-sage-500"}`}>
+          {(typeof message.timestamp === 'string' ? new Date(message.timestamp) : message.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
         </p>
       </div>
     </div>
