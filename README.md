@@ -30,7 +30,7 @@ Mental health is a critical aspect of our daily lives, yet many struggle to find
 ### 1. Clone the Repository
 ```powershell
 # Clone the repo
-git clone https://github.com/ziukristian/HackSocial_MentalHealthApp.git
+git clone https://github.com/ziukristian/LuminaAI.git
 cd HackSocial_MentalHealthApp
 ```
 
