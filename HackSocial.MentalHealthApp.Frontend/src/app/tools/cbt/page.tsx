@@ -146,7 +146,6 @@ export default function CBTExercisePage() {
     <div className="flex min-h-screen bg-gradient-to-br from-sage-50 via-white to-lavender-50">
       <AppSidebar />
       <div className="flex-1 overflow-y-auto">
-      {/* Header */}
       <div className="bg-white border-b border-sage-100">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -171,7 +170,6 @@ export default function CBTExercisePage() {
 
       <div className="container mx-auto px-4 py-6 sm:py-8 max-w-6xl">
         <div className="grid lg:grid-cols-4 gap-6 lg:gap-8">
-          {/* Exercise Selection */}
           <div className="lg:col-span-1 space-y-6">
             <Card className="border-sage-100">
               <CardHeader>
@@ -195,7 +193,6 @@ export default function CBTExercisePage() {
               </CardContent>
             </Card>
 
-            {/* Progress */}
             <Card className="border-sage-100">
               <CardHeader>
                 <CardTitle className="text-sage-900">Progress</CardTitle>
@@ -225,7 +222,6 @@ export default function CBTExercisePage() {
             </Card>
           </div>
 
-          {/* Main Exercise */}
           <div className="lg:col-span-3 space-y-6">
             <Card className="border-sage-100">
               <CardHeader>
@@ -257,7 +253,6 @@ export default function CBTExercisePage() {
                   />
                 </div>
 
-                {/* Navigation */}
                 <div className="flex flex-col sm:flex-row justify-between gap-4">
                   <Button
                     onClick={handlePrevious}
@@ -292,7 +287,6 @@ export default function CBTExercisePage() {
               </CardContent>
             </Card>
 
-            {/* Summary (shown when complete) */}
             {isComplete && (
               <Card className="border-green-200 bg-green-25">
                 <CardHeader>

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import {
   ArrowLeft,
   BookOpen,
@@ -18,14 +19,17 @@ import { Badge } from "@/src/components/ui/badge"
 import { Label } from "@/src/components/ui/label"
 import { SidebarProvider, SidebarTrigger } from "@/src/components/ui/sidebar"
 import { AppSidebar } from "@/src/components/ui/appsidebar"
+import apiHandler from "@/src/data/api/apiHandler"
+import { toast } from "sonner"
 
 export default function JournalPage() {
+  const router = useRouter()
   const [selectedPrompt, setSelectedPrompt] = useState<number | null>(null)
   const [journalEntry, setJournalEntry] = useState("")
-  const [mood, setMood] = useState<string>("")
-  const [isSaved, setIsSaved] = useState(false)
+  const [feelingScore, setFeelingScore] = useState<number | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const prompts = [
+ const prompts = [
     {
       id: 1,
       category: "Gratitude",
@@ -76,66 +80,84 @@ export default function JournalPage() {
     },
   ]
 
-  const moods = [
-    { value: "grateful", label: "Grateful", emoji: "🙏" },
-    { value: "peaceful", label: "Peaceful", emoji: "😌" },
-    { value: "hopeful", label: "Hopeful", emoji: "🌟" },
-    { value: "reflective", label: "Reflective", emoji: "🤔" },
-    { value: "anxious", label: "Anxious", emoji: "😰" },
-    { value: "sad", label: "Sad", emoji: "😢" },
-    { value: "frustrated", label: "Frustrated", emoji: "😤" },
-    { value: "content", label: "Content", emoji: "😊" },
+  const moodOptions = [
+    { value: 1, label: "Very Sad", emoji: "😭", color: "bg-red-100 text-red-800" },
+    { value: 2, label: "Sad", emoji: "😢", color: "bg-red-100 text-red-800" },
+    { value: 3, label: "Unhappy", emoji: "😞", color: "bg-orange-100 text-orange-800" },
+    { value: 4, label: "Neutral", emoji: "😐", color: "bg-yellow-100 text-yellow-800" },
+    { value: 5, label: "Okay", emoji: "🙂", color: "bg-lime-100 text-lime-800" },
+    { value: 6, label: "Good", emoji: "😊", color: "bg-green-100 text-green-800" },
+    { value: 7, label: "Great", emoji: "😄", color: "bg-green-100 text-green-800" },
+    { value: 8, label: "Excellent", emoji: "😁", color: "bg-teal-100 text-teal-800" },
+    { value: 9, label: "Amazing", emoji: "🤩", color: "bg-blue-100 text-blue-800" },
+    { value: 10, label: "Ecstatic", emoji: "😍", color: "bg-indigo-100 text-indigo-800" },
   ]
 
-  const handleSave = () => {
-    setIsSaved(true)
-    setTimeout(() => setIsSaved(false), 3000)
-  }
-
   const selectedPromptData = prompts.find((p) => p.id === selectedPrompt)
+
+  const handleSave = async () => {
+    if (!journalEntry.trim() || feelingScore === null) {
+      toast.warning("Please write your entry and select a mood score")
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      const newEntry = {
+        feelingScore,
+        content: journalEntry,
+      }
+
+      const createdEntry = await apiHandler.journalEntries.create(newEntry)
+      
+      toast.success("Journal entry saved successfully!")
+      router.push("/dashboard")
+    } catch (error) {
+      console.error("Failed to save journal entry:", error)
+      toast.error("Failed to save journal entry. Please try again.")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return (
     <SidebarProvider>
       <div className="min-h-screen bg-gradient-to-br from-sage-50 via-white to-lavender-50 flex flex-col">
-        {/* Header */}
-      
+        <div className="bg-white border-b border-sage-100 sticky top-0 z-10">
+          <div className="px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <SidebarTrigger className="hover:bg-sage-100 rounded-lg" />
+              </div>
 
-        {/* Main Layout: Sidebar + Content */}
-        <div className="flex flex-1 overflow-hidden">
-          {/* Sidebar */}
-            <AppSidebar />
-
-          {/* Page Content */}
-          <main className="flex-1 overflow-y-auto">
-             <div className="bg-white border-b border-sage-100 sticky top-0 z-10">
-      <div className="px-4 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-             <SidebarTrigger className="hover:bg-sage-100 rounded-lg" />
-            <h1 className="text-lg sm:text-xl font-semibold text-sage-900">
-              Guided Journaling
-            </h1>
+              <Button
+                onClick={handleSave}
+                disabled={isSubmitting || !journalEntry.trim() || feelingScore === null}
+                className="bg-sage-600 hover:bg-sage-700 text-white"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Save className="w-4 h-4 mr-2 animate-pulse" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 mr-2" />
+                    Save Entry
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
-
-          {journalEntry && (
-            <Button
-              onClick={handleSave}
-              className={`${
-                isSaved
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "bg-sage-600 hover:bg-sage-700"
-              } text-white`}
-            >
-              <Save className="w-4 h-4 mr-2" />
-              {isSaved ? "Saved!" : "Save Entry"}
-            </Button>
-          )}
         </div>
-      </div>
-    </div>
+
+        <div className="flex flex-1 overflow-hidden">
+          <AppSidebar />
+
+          <main className="flex-1 overflow-y-auto">
             <div className="container mx-auto px-4 py-6 sm:py-8 max-w-6xl">
               <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
-                {/* Prompt List */}
                 <div className="lg:col-span-1 space-y-6">
                   <Card className="border-sage-100">
                     <CardHeader>
@@ -192,7 +214,6 @@ export default function JournalPage() {
                   </Card>
                 </div>
 
-                {/* Writing Area */}
                 <div className="lg:col-span-2 space-y-6">
                   <Card className="border-sage-100">
                     <CardHeader>
@@ -258,53 +279,61 @@ export default function JournalPage() {
                       </div>
                     </CardContent>
                   </Card>
-
-                  {/* Mood Selection */}
                   <Card className="border-sage-100">
                     <CardHeader>
                       <CardTitle className="text-sage-900">
                         How are you feeling?
                       </CardTitle>
                       <p className="text-sm text-sage-600">
-                        Tag your entry with your current mood
+                        Rate your current mood (1-10 scale)
                       </p>
                     </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        {moods.map((moodOption) => (
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-5 gap-3">
+                        {moodOptions.map((mood) => (
                           <Button
-                            key={moodOption.value}
+                            key={mood.value}
                             variant={
-                              mood === moodOption.value ? "default" : "outline"
+                              feelingScore === mood.value ? "default" : "outline"
                             }
-                            className={`h-auto p-3 flex flex-col items-center space-y-1 ${
-                              mood === moodOption.value
-                                ? "bg-sage-600 hover:bg-sage-700 text-white"
+                            className={`h-auto py-3 flex flex-col items-center ${
+                              feelingScore === mood.value
+                                ? mood.color.replace("bg-", "bg-").replace("text-", "text-white ")
                                 : "border-sage-200 text-sage-700 hover:bg-sage-50 bg-transparent"
                             }`}
-                            onClick={() => setMood(moodOption.value)}
+                            onClick={() => setFeelingScore(mood.value)}
                           >
-                            <span className="text-lg">{moodOption.emoji}</span>
-                            <span className="text-xs">{moodOption.label}</span>
+                            <span className="text-lg">{mood.emoji}</span>
+                            <span className="text-xs">{mood.value}</span>
                           </Button>
                         ))}
+                      </div>
+                      <div className="flex justify-between text-xs text-sage-600 px-1">
+                        <span>Worst</span>
+                        <span>Best</span>
                       </div>
                     </CardContent>
                   </Card>
 
-                  {/* Actions */}
                   <div className="flex flex-col sm:flex-row gap-3">
                     <Button
                       onClick={handleSave}
+                      disabled={isSubmitting || !journalEntry.trim() || feelingScore === null}
                       className={`flex-1 ${
-                        isSaved
-                          ? "bg-green-600 hover:bg-green-700"
-                          : "bg-sage-600 hover:bg-sage-700"
+                        isSubmitting ? "bg-sage-700" : "bg-sage-600 hover:bg-sage-700"
                       } text-white`}
-                      disabled={!journalEntry.trim()}
                     >
-                      <Save className="w-4 h-4 mr-2" />
-                      {isSaved ? "Entry Saved!" : "Save Entry"}
+                      {isSubmitting ? (
+                        <>
+                          <Save className="w-4 h-4 mr-2 animate-pulse" />
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4 mr-2" />
+                          Save Entry
+                        </>
+                      )}
                     </Button>
                     <Button
                       variant="outline"

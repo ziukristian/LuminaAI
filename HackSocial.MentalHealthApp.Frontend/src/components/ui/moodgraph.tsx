@@ -34,7 +34,6 @@ const moodData: MoodEntry[] = [
   { day: '7', mood: 'sad' },
 ]
 
-// Convert to chart-compatible format
 const chartData = moodData.map(entry => ({
   ...entry,
   value: moodMap[entry.mood].value,

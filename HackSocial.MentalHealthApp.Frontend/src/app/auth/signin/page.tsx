@@ -19,7 +19,6 @@ export default function SignInPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-sage-50 via-white to-lavender-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
-        {/* Header */}
         <div className="text-center space-y-4">
           {/* <Link href="/" className="inline-flex items-center text-sage-600 hover:text-sage-700 transition-colors mb-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -36,7 +35,6 @@ export default function SignInPage() {
           <p className="text-sage-700">Continue your wellness journey in a safe, private space</p>
         </div>
 
-        {/* Sign In Form */}
         <Card className="border-sage-100 shadow-lg">
           <CardHeader className="space-y-2 pb-4">
             <div className="flex items-center justify-center space-x-2 text-sage-600">
@@ -175,7 +173,6 @@ export default function SignInPage() {
           </CardContent>
         </Card>
 
-        {/* Anonymous Option */}
         <Card className="border-sage-100 bg-sage-25">
           <CardContent className="p-4 text-center">
             <p className="text-sm text-sage-700 mb-3">Need support right now? You can start chatting anonymously.</p>

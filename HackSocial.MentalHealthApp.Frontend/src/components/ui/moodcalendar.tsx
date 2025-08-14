@@ -9,7 +9,7 @@ const MoodCalendar = () => {
   const monthStart = startOfMonth(currentDate)
   const monthEnd = endOfMonth(currentDate)
 
-  const calendarStart = startOfWeek(monthStart, { weekStartsOn: 0 }) // Sunday
+  const calendarStart = startOfWeek(monthStart, { weekStartsOn: 0 })
   const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 0 })
 
   const daysInMonth = eachDayOfInterval({ start: calendarStart, end: calendarEnd })
@@ -41,14 +41,12 @@ const MoodCalendar = () => {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-7 gap-1">
-          {/* Weekday headers */}
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
             <div key={day} className="text-center text-xs font-medium text-sage-500 py-1">
               {day}
             </div>
           ))}
 
-          {/* Calendar days */}
           {daysInMonth.map((day) => {
             const mood = getMoodForDate(day)
             const isCurrentMonth = isSameMonth(day, currentDate)

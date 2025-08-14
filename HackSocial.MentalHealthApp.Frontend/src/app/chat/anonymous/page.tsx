@@ -67,7 +67,6 @@ export default function AnonymousChatPage() {
     setMessages((prev) => [...prev, userMessage])
     setInputMessage("")
 
-    // Simulate AI response
     setTimeout(() => {
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
@@ -101,7 +100,6 @@ export default function AnonymousChatPage() {
     setMessages((prev) => [...prev, moodMessage])
     setShowMoodCheck(false)
 
-    // AI response to mood
     setTimeout(() => {
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
@@ -115,9 +113,7 @@ export default function AnonymousChatPage() {
 
   return (
     <div className="h-screen bg-gradient-to-br from-sage-50 via-white to-lavender-50 flex">
-      {/* Sidebar */}
       <div className="w-80 bg-white border-r border-sage-100 flex flex-col">
-        {/* Header */}
         <div className="p-4 border-b border-sage-100">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-sage-400 to-sage-600 rounded-lg flex items-center justify-center">
@@ -135,7 +131,6 @@ export default function AnonymousChatPage() {
           </div>
         </div>
 
-        {/* Anonymous Notice */}
         <div className="p-4 bg-sage-25 border-b border-sage-100">
           <div className="space-y-2">
             <p className="text-sm font-medium text-sage-900">Private & Anonymous</p>
@@ -184,7 +179,6 @@ export default function AnonymousChatPage() {
           </Button>
         </div> */}
 
-        {/* Crisis Support */}
         <div className="p-4 mt-auto">
           <Card className="border-red-200 bg-red-50">
             <CardContent className="p-3">
@@ -203,9 +197,7 @@ export default function AnonymousChatPage() {
         </div>
       </div>
 
-      {/* Chat Area */}
       <div className="flex-1 flex flex-col">
-        {/* Chat Header */}
         <div className="p-4 border-b border-sage-100 bg-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -224,14 +216,12 @@ export default function AnonymousChatPage() {
             <div className="flex items-center space-x-2">
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/">
-                  {/* <Settings className="w-4 h-4" /> */}
                 </Link>
               </Button>
             </div>
           </div>
         </div>
 
-        {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.map((message) => (
             <div key={message.id} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
@@ -248,7 +238,6 @@ export default function AnonymousChatPage() {
             </div>
           ))}
 
-          {/* Mood Check Modal */}
           {showMoodCheck && (
             <div className="flex justify-center">
               <Card className="border-sage-200 bg-sage-25 max-w-md">
@@ -296,7 +285,6 @@ export default function AnonymousChatPage() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input Area */}
         <div className="p-4 border-t border-sage-100 bg-white">
           <div className="flex items-end space-x-3">
             <div className="flex-1">
