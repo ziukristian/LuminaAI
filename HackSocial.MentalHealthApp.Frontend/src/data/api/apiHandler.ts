@@ -13,6 +13,9 @@ const axiosInstance = axios.create({
   },
 });
 
+console.log("Axios instance created");
+console.log("Base URL:", process.env.NEXT_PUBLIC_API_URL);
+
 /**
  * Request Interceptor — add auth token
  */
