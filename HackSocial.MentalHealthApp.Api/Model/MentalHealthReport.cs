@@ -8,4 +8,5 @@ public class MentalHealthReport
     public User User { get; set; } = null!;
     public string Content { get; set; } = string.Empty;
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+    public byte[]? FileData { get; set; } = null;
 }

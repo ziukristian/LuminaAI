@@ -11,7 +11,7 @@ public class MentalHealthReportsController : ControllerBase
 
     // Fixed userId for demonstration purposes
     private readonly Guid userId = Guid.Parse("00000000-0000-0000-0000-000000000001");
-    
+
     public MentalHealthReportsController(MentalHealthReportService reportsService)
     {
         _reportsService = reportsService ?? throw new ArgumentNullException(nameof(reportsService));
@@ -37,7 +37,7 @@ public class MentalHealthReportsController : ControllerBase
         {
             return BadRequest("Invalid user ID.");
         }
-        
+
         try
         {
             var report = await _reportsService.GenerateMentalHealthReport(userId);
@@ -51,5 +51,24 @@ public class MentalHealthReportsController : ControllerBase
         {
             return StatusCode(500, "An error occurred while generating the mental health report.");
         }
+    }
+
+    [HttpGet]
+    [Route("{reportId}/download")]
+    public async Task<IActionResult> DownloadMentalHealthReport(Guid reportId)
+    {
+        if (reportId == Guid.Empty)
+        {
+            return BadRequest("Invalid report ID.");
+        }
+
+        var report = await _reportsService.DownloadHealthReportFileByReportId(reportId);
+
+        if (report == null)
+        {
+            return NotFound("Report not found.");
+        }
+
+        return File(report, "application/pdf", $"MentalHealthReport_{reportId}.pdf");
     }
 }

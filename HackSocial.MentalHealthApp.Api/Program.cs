@@ -2,7 +2,7 @@ using HackSocial.MentalHealthApp.Api.Model;
 using HackSocial.MentalHealthApp.Api.Services;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
-using System;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +13,8 @@ builder.Services.AddScoped<MentalHealthReportService>();
 builder.Services.AddScoped<ChatService>();
 builder.Services.AddScoped<OpenAIService>();
 builder.Services.AddHttpClient();
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 builder.Services.AddCors(options =>
 {
