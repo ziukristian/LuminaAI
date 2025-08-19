@@ -22,6 +22,7 @@ import {
   Trash2,
   Menu,
   ChevronLeft,
+  LayoutDashboard
 } from "lucide-react"
 import { Button } from "@/src/components/ui/button"
 import { Card, CardContent } from "@/src/components/ui/card"
@@ -376,14 +377,20 @@ const sendMessage = async () => {
 
       {mobileView === "sidebar" && (
         <div className="md:hidden flex-1 flex flex-col bg-white">
-                <SidebarHeader className="border-b border-sage-100 p-6">
-        <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-sage-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">L</span>
-               </div>
-             <span className="font-bold text-sage-600 text-lg">LUMINA AI</span>
-             </div>
-      </SidebarHeader>
+              <SidebarHeader className="border-b border-sage-100 p-6">
+  <div className="flex items-center justify-between w-full">
+    <div className="flex items-center gap-2">
+      <div className="w-8 h-8 bg-sage-600 rounded-lg flex items-center justify-center">
+        <span className="text-white font-bold text-sm">L</span>
+      </div>
+      <span className="font-bold text-sage-600 text-lg">LUMINA AI</span>
+    </div>
+
+     <Link href="/dashboard">
+      <LayoutDashboard className="w-6 h-6 text-sage-600 hover:text-sage-800 cursor-pointer" />
+    </Link>
+  </div>
+</SidebarHeader>
           <div className="p-4 border-b border-sage-100">
             <Button 
               onClick={createNewChat}

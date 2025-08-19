@@ -42,6 +42,7 @@ import {
 import AppSidebar from "@/src/components/ui/appsidebar"
 import apiHandler from "@/src/data/api/apiHandler"
 import { IJournalEntry } from "@/src/data/api/apiHandler"
+import MoodCalendar from "@/src/components/ui/moodcalendar"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 export default function JournalDashboard() {
@@ -345,78 +346,7 @@ export default function JournalDashboard() {
                 </Card>
 
                 <Card className="border-0 shadow-sm bg-white">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <BarChart3 className="w-5 h-5 text-sage-600" />
-                        <CardTitle className="text-sage-900">Mood Trends</CardTitle>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          variant={selectedPeriod === "week" ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setSelectedPeriod("week")}
-                          className={`rounded-lg ${
-                            selectedPeriod === "week"
-                              ? "bg-sage-600 hover:bg-sage-700 text-white"
-                              : "border-sage-200 text-sage-700 hover:bg-sage-50"
-                          }`}
-                        >
-                          Week
-                        </Button>
-                        <Button
-                          variant={selectedPeriod === "month" ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setSelectedPeriod("month")}
-                          className={`rounded-lg ${
-                            selectedPeriod === "month"
-                              ? "bg-sage-600 hover:bg-sage-700 text-white"
-                              : "border-sage-200 text-sage-700 hover:bg-sage-50"
-                          }`}
-                        >
-                          Month
-                        </Button>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    {journalEntries.length > 0 ? (
-                      <>
-                        <div className="flex items-center justify-between p-4 bg-sage-25 rounded-xl">
-                          <span className="text-sage-700 font-medium">
-                            {selectedPeriod === "week" ? "This week's average" : "This month's average"}
-                          </span>
-                          <Badge className="bg-sage-100 text-sage-800 font-semibold">
-                            {moodSummary.average}/10
-                          </Badge>
-                        </div>
-
-                        <div className="h-64">
-  <ResponsiveContainer width="100%" height="100%">
-    <LineChart data={moodData}>
-      <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-      <XAxis dataKey="date" stroke="#6B7280" />
-      <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} stroke="#6B7280" />
-      <Tooltip />
-      <Line
-        type="monotone"
-        dataKey="mood"
-        stroke="#16A34A"
-        strokeWidth={2}
-        dot={{ r: 5, fill: "#16A34A" }}
-      />
-    </LineChart>
-  </ResponsiveContainer>
-</div>
-                      </>
-                    ) : (
-                      <div className="text-center py-8">
-                        <BarChart3 className="mx-auto h-12 w-12 text-sage-300" />
-                        <h3 className="mt-2 text-sm font-medium text-sage-900">No mood data yet</h3>
-                        <p className="mt-1 text-sm text-sage-500">Create journal entries to track your mood over time.</p>
-                      </div>
-                    )}
-                  </CardContent>
+                      <MoodCalendar />
                 </Card>
               </div>
 

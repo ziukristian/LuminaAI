@@ -26,6 +26,7 @@ import {
   Brain,
   Settings,
   LogOut,
+  BarChart,
 } from "lucide-react"
 
 type NavItem = {
@@ -51,6 +52,11 @@ const navigationItems: NavItem[] = [
     title: "Chat",
     url: "/chat",
     icon: MessageCircle,
+  },
+  {
+    title: "Health Reports",
+    url: "/reports",
+    icon: BarChart,
   },
 ]
 
@@ -86,7 +92,7 @@ export const AppSidebar = () => {
 
   return (
     <Sidebar className="border-r border-sage-100">
-      <SidebarHeader className="border-b border-sage-100 p-6">
+      <SidebarHeader className="border-b border-sage-100 p-3 bg-white">
         <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-sage-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">L</span>

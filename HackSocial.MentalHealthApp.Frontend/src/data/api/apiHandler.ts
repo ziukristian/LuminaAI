@@ -102,6 +102,15 @@ export type Message = {
   timestamp: Date;
 };
 
+export interface IReport {
+  id: string;
+  createdAt: string;
+  downloadUrl?: string;
+  content: string;
+  timestamp: string;
+  reportId: string;
+}
+
 /**
  * API Groups
  */
@@ -131,6 +140,18 @@ const scoreHistory = {
   get: () => requests.get<IScoreHistory>("/scoreHistory"),
 };
 
+const reports = {
+  list: () => requests.get<IReport[]>("/reports"),
+  generate: () => requests.post<IReport>("/reports/generate"),
+    download: async (reportId: string) => {
+    const response = await axiosInstance.get(
+      `/reports/${reportId}/download`,
+      { responseType: "blob" } 
+    )
+    return response
+  },
+};
+
 /**
  * Combined API handler
  */
@@ -138,6 +159,7 @@ const apiHandler = {
   chats,
   journalEntries,
   scoreHistory,
+  reports,
 };
 
 export default apiHandler;

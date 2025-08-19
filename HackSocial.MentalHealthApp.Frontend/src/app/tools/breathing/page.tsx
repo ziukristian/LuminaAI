@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
-import { ArrowLeft, Play, Pause, RotateCcw, Wind } from "lucide-react"
+import { ArrowLeft, Play, Pause, RotateCcw } from "lucide-react"
 import { Button } from "@/src/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Progress } from "@/src/components/ui/progress"
@@ -15,6 +15,7 @@ export default function BreathingExercisePage() {
   const [timeLeft, setTimeLeft] = useState(4)
   const [cycle, setCycle] = useState(0)
   const [totalCycles] = useState(8)
+  const synthRef = useRef<SpeechSynthesis | null>(null)
 
   const phases = {
     inhale: { duration: 4, next: "hold", instruction: "Breathe in slowly" },
@@ -22,6 +23,21 @@ export default function BreathingExercisePage() {
     exhale: { duration: 8, next: "pause", instruction: "Breathe out slowly" },
     pause: { duration: 2, next: "inhale", instruction: "Rest" },
   }
+
+  // --- VOICE FUNCTION ---
+  const speak = (text: string) => {
+    if (!("speechSynthesis" in window)) return
+    const utter = new SpeechSynthesisUtterance(text)
+    utter.rate = 1
+    utter.pitch = 1
+    utter.volume = 1
+    window.speechSynthesis.cancel() // stop previous
+    window.speechSynthesis.speak(utter)
+  }
+
+  useEffect(() => {
+    synthRef.current = window.speechSynthesis
+  }, [])
 
   useEffect(() => {
     let interval: NodeJS.Timeout
@@ -46,6 +62,7 @@ export default function BreathingExercisePage() {
       } else {
         setPhase(nextPhase)
         setTimeLeft(phases[nextPhase].duration)
+        speak(phases[nextPhase].instruction) // 🔊 Speak instruction
       }
     }
 
@@ -54,13 +71,15 @@ export default function BreathingExercisePage() {
 
   const startExercise = () => {
     setIsActive(true)
-    setPhase("inhale")
-    setTimeLeft(4)
-    setCycle(0)
+    // Only speak at start if it was at beginning
+    if (cycle === 0 && phase === "inhale" && timeLeft === 4) {
+      speak(phases.inhale.instruction)
+    }
   }
 
   const pauseExercise = () => {
     setIsActive(false)
+    window.speechSynthesis.cancel() // stop current speech
   }
 
   const resetExercise = () => {
@@ -68,8 +87,10 @@ export default function BreathingExercisePage() {
     setPhase("inhale")
     setTimeLeft(4)
     setCycle(0)
+    window.speechSynthesis.cancel()
   }
 
+  // Circle animation
   const getCircleScale = () => {
     switch (phase) {
       case "inhale":
@@ -102,9 +123,9 @@ export default function BreathingExercisePage() {
 
   return (
     <SidebarProvider>
-    <div className="flex min-h-screen bg-gradient-to-br from-sage-50 via-white to-lavender-50">
-      <AppSidebar />
-            <div className="flex-1 overflow-y-auto">
+      <div className="flex min-h-screen bg-gradient-to-br from-sage-50 via-white to-lavender-50">
+        <AppSidebar />
+        <div className="flex-1 overflow-y-auto">
       <div className="bg-white border-b border-sage-100">
           <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -294,7 +315,7 @@ export default function BreathingExercisePage() {
         </div>
       </div>
       </div>
-    </div>
+      </div>
     </SidebarProvider>
   )
 }
