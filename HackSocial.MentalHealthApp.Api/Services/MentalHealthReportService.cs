@@ -1,6 +1,6 @@
 ﻿using HackSocial.MentalHealthApp.Api.DTOs;
 using HackSocial.MentalHealthApp.Api.Model;
-using Microsoft.Extensions.Configuration;
+using QuestPDF.Fluent;
 
 namespace HackSocial.MentalHealthApp.Api.Services;
 
@@ -69,11 +69,17 @@ public class MentalHealthReportService
         // Call OpenAI to generate the report
         var reportContent = await _openAiService.GenerateCompletionAsync(prompt, systemPrompt);
 
+        if (string.IsNullOrWhiteSpace(reportContent))
+        {
+            throw new InvalidOperationException("Failed to generate a meaningful report from the journal entries.");
+        }
+
         var mentalHealthReport = new MentalHealthReport
         {
             UserId = userId,
             Content = reportContent,
-            Timestamp = DateTime.UtcNow
+            Timestamp = DateTime.UtcNow,
+            FileData = null,
         };
 
         _db.MentalHealthReports.Add(mentalHealthReport);
@@ -85,5 +91,51 @@ public class MentalHealthReportService
             Content = mentalHealthReport.Content,
             Timestamp = mentalHealthReport.Timestamp
         };
+    }
+
+    public async Task<byte[]> DownloadHealthReportFileByReportId(Guid reportId)
+    {
+        if (reportId == Guid.Empty)
+        {
+            throw new ArgumentException("Invalid report ID.", nameof(reportId));
+        }
+
+        var report = _db.MentalHealthReports.Find(reportId) ?? throw new InvalidOperationException("Report not found.");
+
+        if (report.FileData == null)
+        {
+            report.FileData = await GenerateMentalHealthReportFile(report.Content);
+            _db.SaveChanges();
+        }
+
+        return await Task.FromResult(report.FileData);
+    }
+
+    public async Task<byte[]> GenerateMentalHealthReportFile(string reportContent)
+    {
+        var pdfBytes = Document.Create(container =>
+        {
+            container.Page(page =>
+            {
+                page.Margin(50);
+
+                page.Header()
+                    .Text("Mental Health Report")
+                    .FontSize(20)
+                    .Bold()
+                    .AlignCenter();
+
+                page.Content()
+                    .PaddingVertical(20)
+                    .Text(reportContent)
+                    .FontSize(12);
+
+                page.Footer()
+                    .AlignCenter()
+                    .Text($"Generated on: {DateTime.Now:yyyy-MM-dd HH:mm}");
+            });
+        }).GeneratePdf();
+
+        return await Task.FromResult(pdfBytes);
     }
 }
