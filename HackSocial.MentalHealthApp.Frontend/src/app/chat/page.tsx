@@ -284,14 +284,19 @@ const sendMessage = async () => {
   return (
     <div className="h-screen bg-gradient-to-br from-sage-50 via-white to-lavender-50 flex flex-col md:flex-row">
       <div className="hidden md:flex w-80 bg-white border-r border-sage-100 flex-col">
-           <SidebarHeader className="border-b border-sage-100 p-6">
-        <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-sage-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">L</span>
-               </div>
-             <span className="font-bold text-sage-600 text-lg">LUMINA AI</span>
-             </div>
-      </SidebarHeader>
+          <SidebarHeader className="border-b border-sage-100 p-6">
+  <div className="flex items-center gap-2">
+    <div className="w-8 h-8 bg-sage-600 rounded-lg flex items-center justify-center">
+      <span className="text-white font-bold text-sm">L</span>
+    </div>
+
+    <span className="font-bold text-sage-600 text-lg">LUMINA AI</span>
+
+    <Link href="/dashboard" className="ml-auto">
+      <LayoutDashboard className="w-6 h-6 text-sage-600 hover:text-sage-800 cursor-pointer" />
+    </Link>
+  </div>
+</SidebarHeader>
         <div className="p-4 border-b border-sage-100">
           <Button 
             onClick={createNewChat}
